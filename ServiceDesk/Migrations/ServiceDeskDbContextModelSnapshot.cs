@@ -17,6 +17,40 @@ namespace ServiceDesk.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
 
+            modelBuilder.Entity("Feedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FeedbackText")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SolucaoId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SolucaoId");
+
+                    b.ToTable("Feedback");
+                });
+
+            modelBuilder.Entity("ServiceDesk.Categoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categoria");
+                });
+
             modelBuilder.Entity("ServiceDesk.CentroDeCusto", b =>
                 {
                     b.Property<int>("Id")
@@ -45,6 +79,20 @@ namespace ServiceDesk.Migrations
                     b.ToTable("Dispositivo");
                 });
 
+            modelBuilder.Entity("ServiceDesk.Filtro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Filtro");
+                });
+
             modelBuilder.Entity("ServiceDesk.Funcionario", b =>
                 {
                     b.Property<int>("Id")
@@ -68,6 +116,104 @@ namespace ServiceDesk.Migrations
                     b.ToTable("Funcionario");
                 });
 
+            modelBuilder.Entity("ServiceDesk.Models.Sla", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sla");
+                });
+
+            modelBuilder.Entity("ServiceDesk.Models.Ticket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("DispositivoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Titulo")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("categoriaId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("dataAbertura")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("funcionarioResponsavelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("propriedadeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("slaId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("statusId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("usuarioCriadorId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DispositivoId");
+
+                    b.HasIndex("categoriaId");
+
+                    b.HasIndex("funcionarioResponsavelId");
+
+                    b.HasIndex("propriedadeId");
+
+                    b.HasIndex("slaId");
+
+                    b.HasIndex("statusId");
+
+                    b.HasIndex("usuarioCriadorId");
+
+                    b.ToTable("Ticket");
+                });
+
+            modelBuilder.Entity("ServiceDesk.Prioridade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Prioridade");
+                });
+
+            modelBuilder.Entity("ServiceDesk.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Status");
+                });
+
             modelBuilder.Entity("ServiceDesk.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -88,18 +234,90 @@ namespace ServiceDesk.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CentroDeCustoId");
+                    b.HasIndex("CentroDeCustoId")
+                        .IsUnique();
 
                     b.HasIndex("DispositivoId");
 
                     b.ToTable("Usuario");
                 });
 
+            modelBuilder.Entity("Solucao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DescSolucao")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Solucao");
+                });
+
+            modelBuilder.Entity("Feedback", b =>
+                {
+                    b.HasOne("Solucao", "Solucao")
+                        .WithMany()
+                        .HasForeignKey("SolucaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Solucao");
+                });
+
+            modelBuilder.Entity("ServiceDesk.Models.Ticket", b =>
+                {
+                    b.HasOne("ServiceDesk.Dispositivo", "Dispositivo")
+                        .WithMany()
+                        .HasForeignKey("DispositivoId");
+
+                    b.HasOne("ServiceDesk.Categoria", "categoria")
+                        .WithMany()
+                        .HasForeignKey("categoriaId");
+
+                    b.HasOne("ServiceDesk.Funcionario", "funcionarioResponsavel")
+                        .WithMany()
+                        .HasForeignKey("funcionarioResponsavelId");
+
+                    b.HasOne("ServiceDesk.Prioridade", "propriedade")
+                        .WithMany()
+                        .HasForeignKey("propriedadeId");
+
+                    b.HasOne("ServiceDesk.Models.Sla", "sla")
+                        .WithMany("Tickets")
+                        .HasForeignKey("slaId");
+
+                    b.HasOne("ServiceDesk.Status", "status")
+                        .WithMany()
+                        .HasForeignKey("statusId");
+
+                    b.HasOne("ServiceDesk.Usuario", "usuarioCriador")
+                        .WithMany()
+                        .HasForeignKey("usuarioCriadorId");
+
+                    b.Navigation("Dispositivo");
+
+                    b.Navigation("categoria");
+
+                    b.Navigation("funcionarioResponsavel");
+
+                    b.Navigation("propriedade");
+
+                    b.Navigation("sla");
+
+                    b.Navigation("status");
+
+                    b.Navigation("usuarioCriador");
+                });
+
             modelBuilder.Entity("ServiceDesk.Usuario", b =>
                 {
                     b.HasOne("ServiceDesk.CentroDeCusto", "CentroDeCusto")
-                        .WithMany()
-                        .HasForeignKey("CentroDeCustoId");
+                        .WithOne("Usuario")
+                        .HasForeignKey("ServiceDesk.Usuario", "CentroDeCustoId");
 
                     b.HasOne("ServiceDesk.Dispositivo", "Dispositivo")
                         .WithMany()
@@ -108,6 +326,17 @@ namespace ServiceDesk.Migrations
                     b.Navigation("CentroDeCusto");
 
                     b.Navigation("Dispositivo");
+                });
+
+            modelBuilder.Entity("ServiceDesk.CentroDeCusto", b =>
+                {
+                    b.Navigation("Usuario")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ServiceDesk.Models.Sla", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }

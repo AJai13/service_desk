@@ -10,4 +10,7 @@ using System.ComponentModel.DataAnnotations;
         public string? Email { get; set; }
         public CentroDeCusto? CentroDeCusto { get; set; }
         public Dispositivo? Dispositivo { get; set; }
-    }
+
+        public int? CentroDeCustoId { get; set; }
+       
+}

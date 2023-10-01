@@ -12,6 +12,7 @@ namespace ServiceDesk.Models
         public Status? status { get; set; }
         public Prioridade? propriedade { get; set; }
         public Categoria? categoria { get; set; }  
+        public Sla? sla { get; set; }
         public Dispositivo? Dispositivo { get; set; }
         public Usuario? usuarioCriador { get; set; }
         public Funcionario? funcionarioResponsavel { get; set; }
