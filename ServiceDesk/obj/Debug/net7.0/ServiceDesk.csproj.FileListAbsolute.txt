@@ -222,3 +222,4 @@ C:\Users\gustavo.szesz\Downloads\ServiceDesk\ServiceDesk\ServiceDesk\bin\Debug\n
 C:\Users\gustavo.szesz\Downloads\ServiceDesk\ServiceDesk\ServiceDesk\bin\Debug\net7.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\gustavo.szesz\Downloads\ServiceDesk\ServiceDesk\ServiceDesk\bin\Debug\net7.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\gustavo.szesz\Downloads\ServiceDesk\ServiceDesk\ServiceDesk\bin\Debug\net7.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\gustavo.szesz\Downloads\ServiceDesk\ServiceDesk\ServiceDesk\bin\Debug\net7.0\Swashbuckle.AspNetCore.Annotations.dll

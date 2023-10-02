@@ -58,16 +58,18 @@ namespace ServiceDesk;
             return Ok();
         }
 
+
         [HttpDelete]
         [Route("excluir/{email}")]
         public async Task<ActionResult> Excluir(string email)
         {
-            if(_dbContext is null) return NotFound();
-            if(_dbContext.Usuario is null) return NotFound();
+            if (_dbContext is null) return NotFound();
+            if (_dbContext.Usuario is null) return NotFound();
             var usuarioTemp = await _dbContext.Usuario.FindAsync(email);
-            if(usuarioTemp is null) return NotFound();
+            if (usuarioTemp is null) return NotFound();
             _dbContext.Remove(usuarioTemp);
             await _dbContext.SaveChangesAsync();
             return Ok();
         }
-        }
+
+}

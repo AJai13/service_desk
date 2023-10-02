@@ -1,0 +1,32 @@
+Criando ticket modelo
+
+{
+  "id": 1,
+  "titulo": "string",
+  "descricao": "string",
+  "dataAbertura": "2023-10-02T03:27:06.432Z",
+  "usuarioCriador": {
+    "id": 1,
+    "nome": "string",
+    "email": "string",
+    "dispositivo": null,
+    "centroDeCustoId": 1
+  },
+  "funcionarioResponsavel": {
+    "id": 2,
+    "nome": "string",
+    "email": "string",
+    "senha": "string",
+    "cargo": "string"
+  }
+}
+
+criando ticket 2
+{
+  "titulo": "string",
+  "descricao": "string",
+  "dataAbertura": "2023-10-02T02:07:01.482",
+  "funcionarioResponsavelId": 2
+}
+
+

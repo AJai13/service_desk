@@ -16,7 +16,7 @@ public class ServiceDeskDbContext : DbContext
     public DbSet<Feedback>? Feedback { get; set; }
     public DbSet<Status>? Status { get; set; }
     public DbSet<Sla>? Sla { get; set; }
-    public DbSet<CentroDeCusto> CentroDeCusto {  get; set; }    
+    public DbSet<CentroDeCusto> CentroDeCusto {  get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -29,6 +29,10 @@ public class ServiceDeskDbContext : DbContext
             .HasOne(c => c.Usuario)
             .WithOne(u => u.CentroDeCusto)
             .HasForeignKey<Usuario>(u => u.CentroDeCustoId);
+        
     }
+
+
+
 
 }

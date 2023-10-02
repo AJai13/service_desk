@@ -1,5 +1,9 @@
+using ServiceDesk.Migrations;
+using ServiceDesk.Models;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-namespace ServiceDesk;
+using System.Text.Json.Serialization;
+
 public class Funcionario
 {
     [Key]
@@ -7,5 +11,8 @@ public class Funcionario
     public string? Nome { get; set; }
     public string? Email { get; set; }
     public string? Senha { get; set; }
-    public string? Cargo { get; set; } 
+    public string? Cargo { get; set; }
+
+    [JsonIgnore]
+    public ICollection<ServiceDesk.Models.Ticket>? Ticket { get; set; }
 }

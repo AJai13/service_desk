@@ -41,35 +41,36 @@ public class SLAController : ControllerBase
 
 
     [HttpPost]
-    [Route("adicionarTicket")]
-    public async Task<ActionResult> AdicionarTicket(int ticketId)
+    [Route("associarSlaAoTicket/{ticketId}/{slaId}")]
+    public IActionResult AssociarSlaAoTicket(int ticketId, int slaId)
     {
-        if (_dbContext is null) return NotFound();
-        if (_dbContext.Ticket is null) return NotFound();
-
-        // Recupere o Ticket pelo ID
-        var ticket = await _dbContext.Ticket.FindAsync(ticketId);
-
-        // Verifique se o Ticket existe
-        if (ticket == null)
-        {
-            return BadRequest("Ticket não encontrado.");
-        }
-
-        // Adicione o Ticket ao SLA com base nas regras internas do sistema
-        // Você deve implementar essa lógica com base em como os SLAs são atribuídos no seu sistema
-
         try
         {
-            // Determine o SLA com base nas regras internas do sistema e atribua-o ao ticket
-            // ticket.Sla = ...; // Atribua o SLA ao ticket
+            // Verifique se o ticket com o ticketId existe no banco de dados
+            var ticket = _dbContext.Ticket.FirstOrDefault(t => t.Id == ticketId);
+            if (ticket == null)
+            {
+                return NotFound("O ticket especificado não foi encontrado.");
+            }
 
-            await _dbContext.SaveChangesAsync();
-            return Created("", ticket);
+            // Verifique se o SLA com o slaId existe no banco de dados
+            var sla = _dbContext.Sla.FirstOrDefault(s => s.Id == slaId);
+            if (sla == null)
+            {
+                return NotFound("O SLA especificado não foi encontrado.");
+            }
+
+            // Associe o SLA ao ticket
+            ticket.sla = sla;
+
+            _dbContext.SaveChanges();
+
+            return Ok($"SLA associado ao ticket '{ticket.Titulo}' com sucesso.");
         }
         catch (Exception ex)
         {
-            return BadRequest($"Ocorreu um erro ao adicionar o Ticket ao SLA: {ex.Message}");
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
         }
     }
+
 }

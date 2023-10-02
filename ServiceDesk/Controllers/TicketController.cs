@@ -13,59 +13,90 @@ public class TicketController : ControllerBase
     public TicketController(ServiceDeskDbContext dbContext)
     {
         _dbContext = dbContext;
+
+
     }
-
-
     [HttpPost]
-    [Route("cadastrar")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> CadastrarTicket([FromBody] Ticket ticket)
+    [Route("criarTicket")]
+    public async Task<ActionResult> CriarTicket(
+     [FromQuery] string titulo,
+     [FromQuery] string descricao,
+     [FromQuery] string emailUsuarioCriador,
+     [FromQuery] string nomeDispositivo,
+     [FromQuery] string nomeFuncionarioResponsavel)
     {
-        if (_dbContext is null)
-        {
-            return NotFound();
-        }
-
-        using var transaction = await _dbContext.Database.BeginTransactionAsync();
-
         try
         {
-            // Verifique se as propriedades relacionadas não são nulas e carregue-as do banco de dados
-            if (ticket.status != null)
+            // Aqui, você pode criar um novo objeto Ticket com os campos recebidos como parâmetros.
+            var novoTicket = new Ticket
             {
-                var status = await _dbContext.Status.FirstOrDefaultAsync(s => s.Id == ticket.status.Id);
-                if (status == null)
+                Titulo = titulo,
+                Descricao = descricao,
+                dataAbertura = DateTime.Now, // Data atual como padrão
+                usuarioCriador = new Usuario
                 {
-                    return BadRequest("Status não encontrado.");
-                }
-                ticket.status = status;
-            }
-
-            if (ticket.propriedade != null)
-            {
-                var propriedade = await _dbContext.Prioridade.FirstOrDefaultAsync(p => p.Id == ticket.propriedade.Id);
-                if (propriedade == null)
+                    Email = emailUsuarioCriador
+                },
+                funcionarioResponsavel = new Funcionario
                 {
-                    return BadRequest("Prioridade não encontrada.");
+                    Nome = nomeFuncionarioResponsavel
                 }
-                ticket.propriedade = propriedade;
-            }
+            };
 
-            // Repita o processo para outras propriedades relacionadas
+            // Adicione a lógica para salvar o novoTicket no banco de dados.
+            // Certifique-se de configurar o funcionário responsável corretamente, se necessário.
 
-            await _dbContext.AddAsync(ticket);
-            await _dbContext.SaveChangesAsync();
-            transaction.Commit();
-
-            return Created("", ticket);
+            // Retorna uma resposta de sucesso.
+            return Created("", novoTicket);
         }
         catch (Exception ex)
         {
-            transaction.Rollback();
-            return BadRequest($"Ocorreu um erro ao cadastrar o Ticket: {ex.Message}");
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
         }
     }
+
+
+
+
+
+
+    [HttpPost]
+    [Route("atribuirTicket")]
+    public async Task<ActionResult> AtribuirTicket([FromQuery] int ticketId, [FromQuery] int funcionarioId)
+    {
+        try
+        {
+            // Certifique-se de que o Ticket com o ID especificado existe
+            var ticketExistente = await _dbContext.Ticket.FindAsync(ticketId);
+
+            if (ticketExistente == null)
+            {
+                return NotFound("Ticket não encontrado.");
+            }
+
+            // Certifique-se de que o FuncionarioResponsavel com o ID especificado existe
+            var funcionarioExistente = await _dbContext.Funcionario.FindAsync(funcionarioId);
+
+            if (funcionarioExistente == null)
+            {
+                return NotFound("FuncionarioResponsavel não encontrado.");
+            }
+
+            // Atribua o FuncionarioResponsavel ao Ticket
+            ticketExistente.funcionarioResponsavel = funcionarioExistente;
+            _dbContext.Update(ticketExistente);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Ticket atribuído ao FuncionarioResponsavel com sucesso.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
+
+
+
 
 
 
@@ -95,6 +126,19 @@ public class TicketController : ControllerBase
         return NotFound("Ticket não encontrado.");
     }
 
-
+    [HttpGet]
+    [Route("listarTickets")]
+    public IActionResult ListarTickets()
+    {
+        try
+        {
+            var tickets = _dbContext.Ticket.ToList();
+            return Ok(tickets);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
 
 }

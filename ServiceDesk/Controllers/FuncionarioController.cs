@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ServiceDesk.Models;
 using ServiceDesk.Data;
 using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ServiceDesk.Controllers
 {
@@ -25,18 +26,21 @@ namespace ServiceDesk.Controllers
             {
                 if (funcionario == null)
                 {
-                    return BadRequest("Invalid data received.");
+                    return BadRequest("Dados inválidos ou nulos. Favor validar.");
                 }
 
-                if (_dbContext is null)
+                if (_dbContext == null)
                 {
-                    return NotFound("Database context not found.");
+                    return NotFound("Database não encontrada.");
                 }
 
-                if (_dbContext.Funcionario is null)
+                if (_dbContext.Funcionario == null)
                 {
-                    return NotFound("Table 'Funcionario' not found in the database.");
+                    return NotFound("Tabela 'Funcionario' não encontrada.");
                 }
+
+                // Defina a propriedade Ticket como nula para remover a serialização
+                funcionario.Ticket = null;
 
                 await _dbContext.AddAsync(funcionario);
                 await _dbContext.SaveChangesAsync();
@@ -45,9 +49,11 @@ namespace ServiceDesk.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
             }
         }
+
+
 
         [HttpPost]
         [Route("fazerLogin")]
@@ -57,20 +63,20 @@ namespace ServiceDesk.Controllers
             {
                 if (funcionario == null || string.IsNullOrWhiteSpace(funcionario.Email) || string.IsNullOrWhiteSpace(funcionario.Senha))
                 {
-                    return BadRequest("Invalid login data received.");
+                    return BadRequest("Login invalido.");
                 }
 
-                // Find the corresponding Funcionario in the database
+
                 var authenticatedFuncionario = await _dbContext.Funcionario
                     .FirstOrDefaultAsync(f => f.Email == funcionario.Email && f.Senha == funcionario.Senha);
 
                 if (authenticatedFuncionario == null)
                 {
-                    return Unauthorized("Authentication failed. Email or password is incorrect.");
+                    return Unauthorized("Autenticação recusada, e-mail ou senha errada.");
                 }
 
-                // Authentication successful
-                return Ok("Authentication successful.");
+
+                return Ok("Autenticação aceita!.");
             }
             catch (Exception ex)
             {
@@ -86,7 +92,7 @@ namespace ServiceDesk.Controllers
             {
                 if (updatedFuncionario == null)
                 {
-                    return BadRequest("Invalid data received.");
+                    return BadRequest("Dados invalidos, ou nulos. Favor validar.");
                 }
 
                 // Find the corresponding Funcionario in the database
@@ -114,7 +120,37 @@ namespace ServiceDesk.Controllers
         }
 
 
+        [HttpGet]
+        [Route("visualizarTickets/{funcionarioId}")]
+        public async Task<ActionResult<IEnumerable<Ticket>>> VisualizarTickets(int funcionarioId)
+        {
+            // Encontre o funcionário pelo ID
+            var funcionario = await _dbContext.Funcionario
+                .Include(f => f.Ticket) // Inclua os tickets associados ao funcionário
+                .FirstOrDefaultAsync(f => f.Id == funcionarioId);
 
+            if (funcionario == null)
+            {
+                return NotFound();
+            }
+
+            var tickets = funcionario.Ticket.ToList();
+            return Ok(tickets);
+        }
+
+        [HttpGet("listarFuncionarios")]
+        public async Task<ActionResult<IEnumerable<Funcionario>>> ListarFuncionarios()
+        {
+            try
+            {
+                var funcionarios = await _dbContext.Funcionario.ToListAsync();
+                return Ok(funcionarios);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
 
 
     }

@@ -94,6 +94,10 @@
               "target": "Package",
               "version": "[6.5.0, )"
             },
+            "Swashbuckle.AspNetCore.Annotations": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            },
             "System.Data.SQLite.Linq": {
               "target": "Package",
               "version": "[1.0.118, )"

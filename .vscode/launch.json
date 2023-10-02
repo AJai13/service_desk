@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "DotNetAutoAttach",
+            "request": "launch",
+            "name": ".NET Core Watch",
+            "args": [],
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+
+    ]
+}

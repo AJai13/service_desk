@@ -43,6 +43,34 @@ namespace ServiceDesk.Controllers
         }
 
 
+        [HttpPost]
+        [Route("associarCategoriaAoTicket/{ticketId}")]
+        public async Task<ActionResult> AssociarCategoriaAoTicket(int ticketId, [FromBody] Categoria categoria)
+        {
+            try
+            {
+                // Verifique se o Ticket com o ticketId especificado existe
+                var ticket = await _dbContext.Ticket.FindAsync(ticketId);
+
+                if (ticket == null)
+                {
+                    return NotFound("Ticket não encontrado.");
+                }
+
+                // Associe a Categoria ao Ticket
+                ticket.categoria = categoria;
+
+                _dbContext.Ticket.Update(ticket);
+                await _dbContext.SaveChangesAsync();
+
+                return Ok("Categoria associada ao Ticket com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
+
 
     }
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "L8oAXIVUq3bXX+PundJkFZnf3CAbxZP9+OZa1QU38eZoD8bSp+e9/mLPPjGjP6XXg8CstN/R++gH3F7fpFBUCA==",
+  "dgSpecHash": "9NVugTgdR8B/mCKGZElLG4STv+wkXrVVpA5IrQwXs0+yM/qLqskTUxzbO68oYYgufHHuPIeSkpG5sDWNetkr6g==",
   "success": true,
   "projectFilePath": "C:\\Users\\gustavo.szesz\\Downloads\\ServiceDesk\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj",
   "expectedPackageFiles": [
@@ -57,6 +57,7 @@
     "C:\\Users\\gustavo.szesz\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.1.4\\sqlitepclraw.lib.e_sqlite3.2.1.4.nupkg.sha512",
     "C:\\Users\\gustavo.szesz\\.nuget\\packages\\sqlitepclraw.provider.e_sqlite3\\2.1.4\\sqlitepclraw.provider.e_sqlite3.2.1.4.nupkg.sha512",
     "C:\\Users\\gustavo.szesz\\.nuget\\packages\\swashbuckle.aspnetcore\\6.5.0\\swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
+    "C:\\Users\\gustavo.szesz\\.nuget\\packages\\swashbuckle.aspnetcore.annotations\\6.5.0\\swashbuckle.aspnetcore.annotations.6.5.0.nupkg.sha512",
     "C:\\Users\\gustavo.szesz\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.5.0\\swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
     "C:\\Users\\gustavo.szesz\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.5.0\\swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
     "C:\\Users\\gustavo.szesz\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.5.0\\swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512",

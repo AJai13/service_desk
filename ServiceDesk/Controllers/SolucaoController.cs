@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ServiceDesk;
 using ServiceDesk.Data; // Importe o contexto do banco de dados
 
 [ApiController]
@@ -45,5 +46,66 @@ public class SolucaoController : ControllerBase
 
         return CreatedAtAction(nameof(GetSolucao), new { id = solucao.Id }, solucao);
     }
+
+    [HttpPost]
+    [Route("associarSolucaoAoTicket/{ticketId}")]
+    public async Task<ActionResult> AssociarSolucaoAoTicket(int ticketId, [FromBody] Solucao solucao)
+    {
+        try
+        {
+            // Verifique se o Ticket com o ticketId especificado existe
+            var ticket = await _dbContext.Ticket.FindAsync(ticketId);
+
+            if (ticket == null)
+            {
+                return NotFound("Ticket não encontrado.");
+            }
+
+            // Associe a Solução ao Ticket
+            ticket.Solucao = solucao;
+
+            _dbContext.Ticket.Update(ticket);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Solução associada ao Ticket com sucesso.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
+
+
+    [HttpPost]
+    [Route("associarCategoriaAoTicket/{ticketId}")]
+    public async Task<ActionResult> AssociarCategoriaAoTicket(int ticketId, [FromBody] Categoria categoria)
+    {
+        try
+        {
+            // Verifique se o Ticket com o ticketId especificado existe
+            var ticket = await _dbContext.Ticket.FindAsync(ticketId);
+
+            if (ticket == null)
+            {
+                return NotFound("Ticket não encontrado.");
+            }
+
+            // Associe a Categoria ao Ticket
+            ticket.categoria = categoria;
+
+            _dbContext.Ticket.Update(ticket);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Categoria associada ao Ticket com sucesso.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
+
+
+
+
 
 }
