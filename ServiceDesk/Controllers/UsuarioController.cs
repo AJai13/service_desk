@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ServiceDesk.Data;
 
 namespace ServiceDesk;
 
@@ -7,9 +8,9 @@ namespace ServiceDesk;
 [Route("[controller]")]
     public class UsuarioController : ControllerBase
     {
-        private UsuarioDbContext? _dbContext;
+        private ServiceDeskDbContext? _dbContext;
 
-        public UsuarioController(UsuarioDbContext dbContext) 
+        public UsuarioController(ServiceDeskDbContext dbContext) 
         { 
             _dbContext = dbContext;
         }
@@ -57,16 +58,18 @@ namespace ServiceDesk;
             return Ok();
         }
 
+
         [HttpDelete]
         [Route("excluir/{email}")]
         public async Task<ActionResult> Excluir(string email)
         {
-            if(_dbContext is null) return NotFound();
-            if(_dbContext.Usuario is null) return NotFound();
+            if (_dbContext is null) return NotFound();
+            if (_dbContext.Usuario is null) return NotFound();
             var usuarioTemp = await _dbContext.Usuario.FindAsync(email);
-            if(usuarioTemp is null) return NotFound();
+            if (usuarioTemp is null) return NotFound();
             _dbContext.Remove(usuarioTemp);
             await _dbContext.SaveChangesAsync();
             return Ok();
         }
-        }
+
+}

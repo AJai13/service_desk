@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\isabe\\OneDrive\\Documentos\\Software engineering\\3 PERÍODO\\Desenvolvimento de software visual\\Exemplos de aula\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj": {}
+    "C:\\Users\\gustavo.szesz\\Downloads\\ServiceDesk\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj": {}
   },
   "projects": {
-    "c:\\Users\\isabe\\OneDrive\\Documentos\\Software engineering\\3 PERÍODO\\Desenvolvimento de software visual\\Exemplos de aula\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj": {
+    "C:\\Users\\gustavo.szesz\\Downloads\\ServiceDesk\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\isabe\\OneDrive\\Documentos\\Software engineering\\3 PERÍODO\\Desenvolvimento de software visual\\Exemplos de aula\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj",
+        "projectUniqueName": "C:\\Users\\gustavo.szesz\\Downloads\\ServiceDesk\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj",
         "projectName": "ServiceDesk",
-        "projectPath": "c:\\Users\\isabe\\OneDrive\\Documentos\\Software engineering\\3 PERÍODO\\Desenvolvimento de software visual\\Exemplos de aula\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj",
-        "packagesPath": "C:\\Users\\isabe\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\isabe\\OneDrive\\Documentos\\Software engineering\\3 PERÍODO\\Desenvolvimento de software visual\\Exemplos de aula\\ServiceDesk\\ServiceDesk\\obj\\",
+        "projectPath": "C:\\Users\\gustavo.szesz\\Downloads\\ServiceDesk\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj",
+        "packagesPath": "C:\\Users\\gustavo.szesz\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\gustavo.szesz\\Downloads\\ServiceDesk\\ServiceDesk\\ServiceDesk\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\isabe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\gustavo.szesz\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -40,6 +44,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Identity.UI": {
+              "target": "Package",
+              "version": "[7.0.11, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[7.0.11, )"
@@ -54,13 +62,45 @@
               "target": "Package",
               "version": "[7.0.11, )"
             },
+            "Microsoft.EntityFrameworkCore.Relational": {
+              "target": "Package",
+              "version": "[7.0.11, )"
+            },
+            "Microsoft.EntityFrameworkCore.Relational.Design": {
+              "target": "Package",
+              "version": "[1.1.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Relational.Specification.Tests": {
+              "target": "Package",
+              "version": "[7.0.11, )"
+            },
             "Microsoft.EntityFrameworkCore.SqLite": {
               "target": "Package",
               "version": "[7.0.11, )"
             },
+            "Microsoft.EntityFrameworkCore.Tools.DotNet": {
+              "target": "Package",
+              "version": "[2.0.3, )"
+            },
+            "SQLite": {
+              "target": "Package",
+              "version": "[3.13.0, )"
+            },
+            "SQLitePCLRaw.core": {
+              "target": "Package",
+              "version": "[2.1.6, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"
+            },
+            "Swashbuckle.AspNetCore.Annotations": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            },
+            "System.Data.SQLite.Linq": {
+              "target": "Package",
+              "version": "[1.0.118, )"
             }
           },
           "imports": [
@@ -82,7 +122,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }

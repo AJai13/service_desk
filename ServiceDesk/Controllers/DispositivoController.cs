@@ -8,9 +8,9 @@ namespace ServiceDesk;
 [Route("[controller]")]
     public class DispositivoController : ControllerBase
     {
-        private DispositivoDbContext? _dbContext;
+        private ServiceDeskDbContext? _dbContext;
 
-        public DispositivoController(DispositivoDbContext dbContext) 
+        public DispositivoController(ServiceDeskDbContext dbContext) 
         { 
             _dbContext = dbContext;
         }
