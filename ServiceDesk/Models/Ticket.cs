@@ -10,13 +10,13 @@ namespace ServiceDesk.Models
         public string? Titulo { get; set; }
         public string? Descricao { get; set; }
         public DateTime dataAbertura { get; set; }
-        [JsonIgnore]
+
         public Status? status { get; set; }
-        [JsonIgnore]
+
         public Prioridade? propriedade { get; set; }
-        [JsonIgnore]
+
         public Categoria? categoria { get; set; }
-        [JsonIgnore]
+
         public Sla? sla { get; set; }
         [JsonIgnore]
         public Dispositivo? Dispositivo { get; set; }
@@ -25,7 +25,6 @@ namespace ServiceDesk.Models
 
         [JsonIgnore]
         public int? SolucaoId { get; set; }
-        [JsonIgnore]
         public Solucao Solucao { get; set; }
 
         public int? funcionarioResponsavelId { get; set; }

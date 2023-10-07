@@ -16,37 +16,71 @@ public class TicketController : ControllerBase
 
 
     }
+
     [HttpPost]
     [Route("criarTicket")]
     public async Task<ActionResult> CriarTicket(
-     [FromQuery] string titulo,
-     [FromQuery] string descricao,
-     [FromQuery] string emailUsuarioCriador,
-     [FromQuery] string nomeDispositivo,
-     [FromQuery] string nomeFuncionarioResponsavel)
+        [FromQuery] string titulo,
+        [FromQuery] string descricao,
+        [FromQuery] string emailUsuarioCriador,
+        [FromQuery] string nomeFuncionarioResponsavel,
+        [FromQuery] string nomeDispositivo)
     {
         try
         {
-            // Aqui, você pode criar um novo objeto Ticket com os campos recebidos como parâmetros.
+            // First, check if the dispositivo with the specified name already exists in the database
+            var dispositivoExistente = await _dbContext.Dispositivo.FirstOrDefaultAsync(d => d.Nome == nomeDispositivo);
+
+            if (dispositivoExistente == null)
+            {
+                // If the dispositivo doesn't exist, you can create a new one and add it to the context
+                dispositivoExistente = new Dispositivo
+                {
+                    Nome = nomeDispositivo
+                };
+                _dbContext.Dispositivo.Add(dispositivoExistente);
+            }
+
+            // Check if the usuario with the specified email already exists in the database
+            var usuarioExistente = await _dbContext.Usuario.FirstOrDefaultAsync(u => u.Email == emailUsuarioCriador);
+
+            if (usuarioExistente == null)
+            {
+                // If the usuario doesn't exist, you can create a new one and add it to the context
+                usuarioExistente = new Usuario
+                {
+                    Email = emailUsuarioCriador
+                };
+                _dbContext.Usuario.Add(usuarioExistente);
+            }
+
+            // Check if the funcionario with the specified name already exists in the database
+            var funcionarioExistente = await _dbContext.Funcionario.FirstOrDefaultAsync(f => f.Nome == nomeFuncionarioResponsavel);
+
+            if (funcionarioExistente == null)
+            {
+                // If the funcionario doesn't exist, you can create a new one and add it to the context
+                funcionarioExistente = new Funcionario
+                {
+                    Nome = nomeFuncionarioResponsavel
+                };
+                _dbContext.Funcionario.Add(funcionarioExistente);
+            }
+
+            // Create the new Ticket with the appropriate relationships
             var novoTicket = new Ticket
             {
                 Titulo = titulo,
                 Descricao = descricao,
-                dataAbertura = DateTime.Now, // Data atual como padrão
-                usuarioCriador = new Usuario
-                {
-                    Email = emailUsuarioCriador
-                },
-                funcionarioResponsavel = new Funcionario
-                {
-                    Nome = nomeFuncionarioResponsavel
-                }
+                dataAbertura = DateTime.Now,
+                usuarioCriador = usuarioExistente, // Associate the Ticket with Usuario
+                funcionarioResponsavel = funcionarioExistente, // Associate the Ticket with Funcionario
+                Dispositivo = dispositivoExistente // Associate the Ticket with Dispositivo
             };
 
-            // Adicione a lógica para salvar o novoTicket no banco de dados.
-            // Certifique-se de configurar o funcionário responsável corretamente, se necessário.
+            _dbContext.Ticket.Add(novoTicket);
+            await _dbContext.SaveChangesAsync();
 
-            // Retorna uma resposta de sucesso.
             return Created("", novoTicket);
         }
         catch (Exception ex)
@@ -54,9 +88,6 @@ public class TicketController : ControllerBase
             return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
         }
     }
-
-
-
 
 
 
@@ -125,14 +156,19 @@ public class TicketController : ControllerBase
 
         return NotFound("Ticket não encontrado.");
     }
-
     [HttpGet]
     [Route("listarTickets")]
     public IActionResult ListarTickets()
     {
         try
         {
-            var tickets = _dbContext.Ticket.ToList();
+            // Use Include to eagerly load related entities (SLA, Categoria, Solucao).
+            var tickets = _dbContext.Ticket
+                .Include(t => t.sla)
+                .Include(t => t.categoria)
+                .Include(t => t.Solucao)
+                .ToList();
+
             return Ok(tickets);
         }
         catch (Exception ex)
@@ -140,5 +176,33 @@ public class TicketController : ControllerBase
             return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
         }
     }
+
+    [HttpDelete]
+    [Route("excluirTicket/{id}")]
+    public IActionResult ExcluirTicket(int id)
+    {
+        try
+        {
+            // Primeiro, verifique se o ticket com o ID especificado existe no banco de dados.
+            var ticketParaExcluir = _dbContext.Ticket.FirstOrDefault(t => t.Id == id);
+
+            if (ticketParaExcluir == null)
+            {
+                return NotFound($"Ticket com ID {id} não encontrado.");
+            }
+
+            // Remova o ticket do contexto e, em seguida, salve as alterações no banco de dados.
+            _dbContext.Ticket.Remove(ticketParaExcluir);
+            _dbContext.SaveChanges();
+
+            return Ok($"Ticket com ID {id} foi excluído com sucesso.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
+
+
 
 }

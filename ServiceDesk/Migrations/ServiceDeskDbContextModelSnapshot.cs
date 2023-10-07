@@ -97,7 +97,13 @@ namespace ServiceDesk.Migrations
                     b.Property<string>("Nome")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId")
+                        .IsUnique();
 
                     b.ToTable("Dispositivo");
                 });
@@ -228,21 +234,19 @@ namespace ServiceDesk.Migrations
                     b.Property<int?>("CentroDeCustoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("DispositivoId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nome")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CentroDeCustoId")
                         .IsUnique();
-
-                    b.HasIndex("DispositivoId");
 
                     b.ToTable("Usuario");
                 });
@@ -271,6 +275,16 @@ namespace ServiceDesk.Migrations
                         .IsRequired();
 
                     b.Navigation("Solucao");
+                });
+
+            modelBuilder.Entity("ServiceDesk.Dispositivo", b =>
+                {
+                    b.HasOne("ServiceDesk.Usuario", "Usuario")
+                        .WithOne("Dispositivo")
+                        .HasForeignKey("ServiceDesk.Dispositivo", "UsuarioId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("ServiceDesk.Models.Ticket", b =>
@@ -330,13 +344,7 @@ namespace ServiceDesk.Migrations
                         .WithOne("Usuario")
                         .HasForeignKey("ServiceDesk.Usuario", "CentroDeCustoId");
 
-                    b.HasOne("ServiceDesk.Dispositivo", "Dispositivo")
-                        .WithMany()
-                        .HasForeignKey("DispositivoId");
-
                     b.Navigation("CentroDeCusto");
-
-                    b.Navigation("Dispositivo");
                 });
 
             modelBuilder.Entity("Funcionario", b =>
@@ -346,13 +354,17 @@ namespace ServiceDesk.Migrations
 
             modelBuilder.Entity("ServiceDesk.CentroDeCusto", b =>
                 {
-                    b.Navigation("Usuario")
-                        .IsRequired();
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("ServiceDesk.Models.Sla", b =>
                 {
                     b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("ServiceDesk.Usuario", b =>
+                {
+                    b.Navigation("Dispositivo");
                 });
 #pragma warning restore 612, 618
         }

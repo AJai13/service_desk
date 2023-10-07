@@ -46,19 +46,82 @@ namespace ServiceDesk;
             return dispositivoTemp;
         }
 
-        [HttpPut]
-        [Route("alterar")]
-        public async Task<ActionResult> Alterar(Dispositivo dispositivo){
-            if(_dbContext is null) return NotFound();
-            if(_dbContext.Dispositivo is null) return NotFound();
-            var dispositivoTemp = await _dbContext.Dispositivo.FindAsync(dispositivo.Nome);
-            if(dispositivoTemp is null) return NotFound();       
-            _dbContext.Dispositivo.Update(dispositivo);
+    [HttpPut]
+    [Route("alterar")]
+    public async Task<ActionResult> Alterar([FromQuery] string antigoNome, [FromQuery] string novoNome)
+    {
+        try
+        {
+            if (_dbContext == null)
+            {
+                return NotFound();
+            }
+
+            // Verifique se o dispositivo com o antigoNome especificado existe
+            var dispositivoExistente = await _dbContext.Dispositivo.FirstOrDefaultAsync(d => d.Nome == antigoNome);
+
+            if (dispositivoExistente == null)
+            {
+                return NotFound("Dispositivo não encontrado.");
+            }
+
+            // Realize as atualizações necessárias no dispositivoExistente
+            dispositivoExistente.Nome = novoNome;
+            // ...
+
+            _dbContext.Dispositivo.Update(dispositivoExistente);
             await _dbContext.SaveChangesAsync();
+
             return Ok();
         }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
 
-        [HttpDelete]
+
+    [HttpPost]
+    [Route("associarUsuarioAoDispositivo/{dispositivoId}")]
+    public async Task<ActionResult> AssociarUsuarioAoDispositivo(int dispositivoId, [FromBody] int usuarioId)
+    {
+        try
+        {
+            // Verifique se o Dispositivo com o dispositivoId especificado existe
+            var dispositivo = await _dbContext.Dispositivo.FindAsync(dispositivoId);
+
+            if (dispositivo == null)
+            {
+                return NotFound("Dispositivo não encontrado.");
+            }
+
+            // Verifique se o Usuario com o usuarioId especificado existe
+            var usuario = await _dbContext.Usuario.FindAsync(usuarioId);
+
+            if (usuario == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            // Associe o Usuário ao Dispositivo
+            //dispositivo.Usuario = usuario;
+            _dbContext.Dispositivo.Update(dispositivo);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Usuário associado ao Dispositivo com sucesso.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
+
+
+
+
+
+
+    [HttpDelete]
         [Route("excluir/{id}")]
         public async Task<ActionResult> Excluir(int id)
         {
@@ -70,4 +133,6 @@ namespace ServiceDesk;
             await _dbContext.SaveChangesAsync();
             return Ok();
         }
+
+
         }

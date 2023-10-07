@@ -15,17 +15,43 @@ public class CentroDeCustoController : ControllerBase
     }
 
     [HttpPost]
-    [Route("cadastrar")]
-    public async Task<ActionResult<CentroDeCusto>> CadastrarCentroDeCusto([FromBody] CentroDeCusto novoCentroDeCusto)
+    [Route("associarCategoriaAoTicket/{ticketId}/{categoryId}")]
+    public async Task<ActionResult> AssociarCategoriaAoTicket(int ticketId, int categoryId)
     {
+        try
+        {
+            // Encontre o ticket pelo ID
+            var ticket = await _dbContext.Ticket.FindAsync(ticketId);
 
-            if (_dbContext is null) return NotFound();
-            if (_dbContext.CentroDeCusto is null) return NotFound();
-            await _dbContext.AddAsync(novoCentroDeCusto);
+            if (ticket == null)
+            {
+                return NotFound("Ticket não encontrado.");
+            }
+
+            // Encontre a categoria pelo ID
+            var categoria = await _dbContext.Categoria.FindAsync(categoryId);
+
+            if (categoria == null)
+            {
+                return NotFound("Categoria não encontrada.");
+            }
+
+            // Associe a categoria ao ticket
+            ticket.categoria = categoria;
+
+            _dbContext.Ticket.Update(ticket);
             await _dbContext.SaveChangesAsync();
-            return Created("", novoCentroDeCusto);
 
+            return Ok("Categoria associada ao Ticket com sucesso.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
     }
+
+
+
 
     [HttpPost]
     [Route("associarUsuarioAoCentroDeCusto/{usuarioId}")]

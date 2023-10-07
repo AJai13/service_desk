@@ -15,61 +15,149 @@ namespace ServiceDesk;
             _dbContext = dbContext;
         }
 
-        [HttpPost]
-        [Route("cadastrar")]
-        public async Task<ActionResult> Cadastrar(Usuario usuario)
+    [HttpPost]
+    [Route("cadastrar")]
+    public async Task<ActionResult> Cadastrar(
+    [FromQuery] string nome,
+    [FromQuery] string email,
+    [FromQuery] string? dispositivo,
+    [FromQuery] string? centroDeCusto)
         {
-            if (_dbContext is null) return NotFound();
-            if (_dbContext.Usuario is null) return NotFound();
+            if (_dbContext == null)
+            {
+                return NotFound();
+            }
+
+            var usuario = new Usuario
+            {
+                Nome = nome,
+                Email = email
+            };
+
+            if (!string.IsNullOrEmpty(dispositivo))
+            {
+                usuario.Dispositivo = new Dispositivo { Nome = dispositivo };
+            }
+
+            if (!string.IsNullOrEmpty(centroDeCusto))
+            {
+                usuario.CentroDeCusto = new CentroDeCusto { Nome = centroDeCusto };
+            }
+
             await _dbContext.AddAsync(usuario);
             await _dbContext.SaveChangesAsync();
-            return Created("",usuario);
+            return Created("", usuario);
         }
-        
-        [HttpGet]
-        [Route("listar")]
-        public async Task<ActionResult<IEnumerable<Usuario>>> Listar()
-        {
-            if (_dbContext is null) return NotFound();
-            if (_dbContext.Usuario is null) return NotFound();
-            return await _dbContext.Usuario.ToListAsync();
-        }
+
+
 
         [HttpGet]
         [Route("buscar/{email}")]
-        public async Task<ActionResult<Usuario>> Buscar(string email)
+        public async Task<ActionResult> Buscar(string email)
         {
-            if(_dbContext is null) return NotFound();
-            if(_dbContext.Usuario is null) return NotFound();
-            var usuarioTemp = await _dbContext.Usuario.FindAsync(email);
-            if(usuarioTemp is null) return NotFound();
-            return usuarioTemp;
+            if (_dbContext == null)
+            {
+                return NotFound();
+            }
+
+        var usuario = await _dbContext.Usuario.Include(u => u.Dispositivo).ToListAsync();
+
+
+        if (usuario == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            return Ok(usuario);
         }
 
-        [HttpPut]
-        [Route("alterar")]
-        public async Task<ActionResult> Alterar(Usuario usuario){
-            if(_dbContext is null) return NotFound();
-            if(_dbContext.Usuario is null) return NotFound();
-            var usuarioTemp = await _dbContext.Usuario.FindAsync(usuario.Nome);
-            if(usuarioTemp is null) return NotFound();       
-            _dbContext.Usuario.Update(usuario);
+    [HttpPut]
+    [Route("alterar")]
+    public async Task<ActionResult> Alterar([FromBody] Usuario usuario, string email)
+    {
+        try
+        {
+            if (_dbContext == null)
+            {
+                return NotFound();
+            }
+
+            var usuarioExistente = await _dbContext.Usuario.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (usuarioExistente == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            usuarioExistente.Nome = usuario.Nome;
+            usuarioExistente.Email = usuario.Email;
+            usuarioExistente.Dispositivo = usuario.Dispositivo;
+            usuarioExistente.CentroDeCusto = usuario.CentroDeCusto;
+
+            _dbContext.Usuario.Update(usuarioExistente);
             await _dbContext.SaveChangesAsync();
+
             return Ok();
         }
-
-
-        [HttpDelete]
-        [Route("excluir/{email}")]
-        public async Task<ActionResult> Excluir(string email)
+        catch (Exception ex)
         {
-            if (_dbContext is null) return NotFound();
-            if (_dbContext.Usuario is null) return NotFound();
-            var usuarioTemp = await _dbContext.Usuario.FindAsync(email);
-            if (usuarioTemp is null) return NotFound();
-            _dbContext.Remove(usuarioTemp);
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
+
+
+    [HttpGet]
+    [Route("listarUsuarios")]
+    public async Task<ActionResult<IEnumerable<Usuario>>> ListarUsuarios()
+    {
+        try
+        {
+            if (_dbContext == null)
+            {
+                return NotFound();
+            }
+
+            var usuarios = await _dbContext.Usuario
+                .Include(u => u.Dispositivo) // Include the Dispositivo navigation property
+                .ToListAsync();
+
+            return Ok(usuarios);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
+
+
+    [HttpDelete]
+    [Route("excluir/{email}")]
+    public async Task<ActionResult> Excluir(string email)
+    {
+        try
+        {
+            if (_dbContext == null)
+            {
+                return NotFound();
+            }
+
+            var usuarioExistente = await _dbContext.Usuario.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (usuarioExistente == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            _dbContext.Usuario.Remove(usuarioExistente);
             await _dbContext.SaveChangesAsync();
+
             return Ok();
         }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
+
 
 }

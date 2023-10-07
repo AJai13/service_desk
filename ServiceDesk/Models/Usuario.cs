@@ -13,7 +13,8 @@ public class Usuario
         [JsonIgnore]
         public CentroDeCusto? CentroDeCusto { get; set; }
         public Dispositivo? Dispositivo { get; set; }
-
         public int? CentroDeCustoId { get; set; }
-       
+
+        public int? UsuarioId { get; set; }
+
 }
