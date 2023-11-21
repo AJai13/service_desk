@@ -1,4 +1,4 @@
-﻿ using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServiceDesk.Data;
 
@@ -13,11 +13,26 @@ public class FeedbackController : ControllerBase
         _dbContext = dbContext;
     }
 
-    [HttpGet("getFeedback")]
-    public IActionResult GetFeedback()
+
+    [HttpGet("getFeedback/{id}")]
+    public async Task<ActionResult<Feedback>> GetFeedback(int id)
     {
-        var feedbacks = _dbContext.Feedback.Include(f => f.Solucao).ToList();
-        return Ok(feedbacks);
+        var feedback = await _dbContext.Feedback.FindAsync(id);
+        if (feedback == null)
+        {
+            return NotFound();
+        }
+
+        return feedback;
+    }
+
+    [HttpGet]
+    [Route("listar")]
+    public async Task<ActionResult<IEnumerable<Feedback>>> Listar()
+    {
+        if (_dbContext is null) return NotFound();
+        if (_dbContext.Feedback is null) return NotFound();
+        return await _dbContext.Feedback.ToListAsync();
     }
 
     [HttpPost("setFeedbackAssociarASolucao")]
@@ -42,6 +57,52 @@ public class FeedbackController : ControllerBase
         _dbContext.SaveChanges();
 
         return CreatedAtAction(nameof(GetFeedback), new { id = feedback.Id }, feedback);
+    }
+
+    [HttpPut]
+    [Route("alterar/{id}")]
+    public async Task<ActionResult> Alterar(int id, [FromBody] Feedback feedback)
+    {
+        try
+        {
+            if (_dbContext == null)
+            {
+                return NotFound();
+            }
+
+            // Verifique se o feedback com o antigoNome especificado existe
+            var feedbackExistente = await _dbContext.Feedback.FirstOrDefaultAsync(d => d.Id == id);
+
+            if (feedbackExistente == null)
+            {
+                return NotFound("Feedback não encontrado.");
+            }
+
+            feedbackExistente.FeedbackText = feedback.FeedbackText;
+            feedbackExistente.SolucaoId = feedback.SolucaoId;
+
+            _dbContext.Feedback.Update(feedbackExistente);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
+
+    [HttpDelete]
+    [Route("excluir/{id}")]
+    public async Task<ActionResult> Excluir(int id)
+    {
+        if (_dbContext is null) return NotFound();
+        if (_dbContext.Feedback is null) return NotFound();
+        var feedbackTemp = await _dbContext.Feedback.FindAsync(id);
+        if (feedbackTemp is null) return NotFound();
+        _dbContext.Remove(feedbackTemp);
+        await _dbContext.SaveChangesAsync();
+        return Ok();
     }
 
 }

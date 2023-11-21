@@ -1,31 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\gustavo.szesz\\Downloads\\ServiceDesk\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj": {}
+    "C:\\Users\\aj_mz\\OneDrive - Cruzeiro do Sul Educacional - Acadêmico\\Documents\\up\\desenvolvimento_de_software_visual\\front\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj": {}
   },
   "projects": {
-    "C:\\Users\\gustavo.szesz\\Downloads\\ServiceDesk\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj": {
+    "C:\\Users\\aj_mz\\OneDrive - Cruzeiro do Sul Educacional - Acadêmico\\Documents\\up\\desenvolvimento_de_software_visual\\front\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gustavo.szesz\\Downloads\\ServiceDesk\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj",
+        "projectUniqueName": "C:\\Users\\aj_mz\\OneDrive - Cruzeiro do Sul Educacional - Acadêmico\\Documents\\up\\desenvolvimento_de_software_visual\\front\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj",
         "projectName": "ServiceDesk",
-        "projectPath": "C:\\Users\\gustavo.szesz\\Downloads\\ServiceDesk\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj",
-        "packagesPath": "C:\\Users\\gustavo.szesz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gustavo.szesz\\Downloads\\ServiceDesk\\ServiceDesk\\ServiceDesk\\obj\\",
+        "projectPath": "C:\\Users\\aj_mz\\OneDrive - Cruzeiro do Sul Educacional - Acadêmico\\Documents\\up\\desenvolvimento_de_software_visual\\front\\ServiceDesk\\ServiceDesk\\ServiceDesk.csproj",
+        "packagesPath": "C:\\Users\\aj_mz\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\aj_mz\\OneDrive - Cruzeiro do Sul Educacional - Acadêmico\\Documents\\up\\desenvolvimento_de_software_visual\\front\\ServiceDesk\\ServiceDesk\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\gustavo.szesz\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\aj_mz\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -122,7 +116,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }

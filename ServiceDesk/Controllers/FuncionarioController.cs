@@ -4,6 +4,7 @@ using ServiceDesk.Models;
 using ServiceDesk.Data;
 using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace ServiceDesk.Controllers
 {
@@ -120,7 +121,79 @@ namespace ServiceDesk.Controllers
         }
 
 
+        [HttpGet]
+        [Route("visualizarTickets/{funcionarioId}")]
+        public async Task<ActionResult<IEnumerable<Ticket>>> VisualizarTickets(int funcionarioId)
+        {
+            // Encontre o funcionário pelo ID
+            var funcionario = await _dbContext.Funcionario
+                .Include(f => f.Ticket) // Inclua os tickets associados ao funcionário
+                .FirstOrDefaultAsync(f => f.Id == funcionarioId);
 
+            if (funcionario == null)
+            {
+                return NotFound();
+            }
 
+            var tickets = funcionario.Ticket.ToList();
+            return Ok(tickets);
+        }
+
+        [HttpGet]
+        [Route("listar")]
+        public async Task<ActionResult<IEnumerable<Funcionario>>> Listar()
+        {
+            if (_dbContext is null) return NotFound();
+            if (_dbContext.Funcionario is null) return NotFound();
+            return await _dbContext.Funcionario.ToListAsync();
+        }
+
+        [HttpPut]
+        [Route("alterar/{id}")]
+        public async Task<ActionResult> Alterar(int id, [FromBody] Funcionario funcionario)
+        {
+            try
+            {
+                if (_dbContext == null)
+                {
+                    return NotFound();
+                }
+
+                // Verifique se o funcionario com o antigoNome especificado existe
+                var funcionarioExistente = await _dbContext.Funcionario.FirstOrDefaultAsync(d => d.Id == id);
+
+                if (funcionarioExistente == null)
+                {
+                    return NotFound("Funcionario não encontrado.");
+                }
+
+                funcionarioExistente.Nome = funcionario.Nome;
+                funcionarioExistente.Email = funcionario.Email;
+                funcionarioExistente.Senha = funcionario.Senha;
+                funcionarioExistente.Cargo = funcionario.Cargo;
+
+                _dbContext.Funcionario.Update(funcionarioExistente);
+                await _dbContext.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
+
+        [HttpDelete]
+        [Route("excluir/{id}")]
+        public async Task<ActionResult> Excluir(int id)
+        {
+            if (_dbContext is null) return NotFound();
+            if (_dbContext.Funcionario is null) return NotFound();
+            var funcionarioTmp = await _dbContext.Funcionario.FindAsync(id);
+            if (funcionarioTmp is null) return NotFound();
+            _dbContext.Remove(funcionarioTmp);
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

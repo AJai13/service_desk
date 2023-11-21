@@ -25,12 +25,18 @@ public class ServiceDeskDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // modelBuilder.Entity<Usuario>()
+        //     .HasOne(u => u.Dispositivo)
+        //     .WithOne(d => d.Usuario)
+        //     .OnDelete(DeleteBehavior.SetNull); // Isso permite que o UsuarioId seja nulo
+
         modelBuilder.Entity<CentroDeCusto>()
             .HasOne(c => c.Usuario)
             .WithOne(u => u.CentroDeCusto)
             .HasForeignKey<Usuario>(u => u.CentroDeCustoId);
-        
     }
+
+
 
 
 

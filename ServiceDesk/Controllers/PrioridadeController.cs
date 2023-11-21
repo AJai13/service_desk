@@ -2,12 +2,13 @@
 using ServiceDesk;
 using ServiceDesk.Data;
 using ServiceDesk.Models;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("[controller]")]
 public class PrioridadeController : ControllerBase
 {
-    private ServiceDeskDbContext? _dbContext;
+    private ServiceDeskDbContext _dbContext;
 
     public PrioridadeController(ServiceDeskDbContext dbContext)
     {
@@ -59,7 +60,7 @@ public class PrioridadeController : ControllerBase
             }
 
             // Associe a prioridade ao ticket
-            ticket.propriedade = prioridade;
+            ticket.prioridade = prioridade;
 
             _dbContext.SaveChanges();
 
@@ -71,6 +72,57 @@ public class PrioridadeController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [Route("listar")]
+    public async Task<ActionResult<IEnumerable<Prioridade>>> Listar()
+    {
+        if (_dbContext is null) return NotFound();
+        if (_dbContext.Prioridade is null) return NotFound();
+        return await _dbContext.Prioridade.ToListAsync();
+    }
 
+    [HttpPut]
+    [Route("alterar/{id}")]
+    public async Task<ActionResult> Alterar(int id, [FromBody] Prioridade prioridade)
+    {
+        try
+        {
+            if (_dbContext == null)
+            {
+                return NotFound();
+            }
 
+            // Verifique se o prioridade com o antigoNome especificado existe
+            var prioridadeExistente = await _dbContext.Prioridade.FirstOrDefaultAsync(d => d.Id == id);
+
+            if (prioridadeExistente == null)
+            {
+                return NotFound("Prioridade não encontrado.");
+            }
+
+            prioridadeExistente.Nome = prioridade.Nome;
+
+            _dbContext.Prioridade.Update(prioridadeExistente);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
+
+    [HttpDelete]
+    [Route("excluir/{id}")]
+    public async Task<ActionResult> Excluir(int id)
+    {
+        if (_dbContext is null) return NotFound();
+        if (_dbContext.Prioridade is null) return NotFound();
+        var prioridadeTmp = await _dbContext.Prioridade.FindAsync(id);
+        if (prioridadeTmp is null) return NotFound();
+        _dbContext.Remove(prioridadeTmp);
+        await _dbContext.SaveChangesAsync();
+        return Ok();
+    }
 }

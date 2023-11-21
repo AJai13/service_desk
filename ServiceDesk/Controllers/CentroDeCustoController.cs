@@ -15,16 +15,39 @@ public class CentroDeCustoController : ControllerBase
     }
 
     [HttpPost]
-    [Route("cadastrar")]
-    public async Task<ActionResult<CentroDeCusto>> CadastrarCentroDeCusto([FromBody] CentroDeCusto novoCentroDeCusto)
+    [Route("associarCategoriaAoTicket/{ticketId}/{categoryId}")]
+    public async Task<ActionResult> AssociarCategoriaAoTicket(int ticketId, int categoryId)
     {
+        try
+        {
+            // Encontre o ticket pelo ID
+            var ticket = await _dbContext.Ticket.FindAsync(ticketId);
 
-            if (_dbContext is null) return NotFound();
-            if (_dbContext.CentroDeCusto is null) return NotFound();
-            await _dbContext.AddAsync(novoCentroDeCusto);
+            if (ticket == null)
+            {
+                return NotFound("Ticket não encontrado.");
+            }
+
+            // Encontre a categoria pelo ID
+            var categoria = await _dbContext.Categoria.FindAsync(categoryId);
+
+            if (categoria == null)
+            {
+                return NotFound("Categoria não encontrada.");
+            }
+
+            // Associe a categoria ao ticket
+            ticket.categoria = categoria;
+
+            _dbContext.Ticket.Update(ticket);
             await _dbContext.SaveChangesAsync();
-            return Created("", novoCentroDeCusto);
 
+            return Ok("Categoria associada ao Ticket com sucesso.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
     }
 
     [HttpPost]
@@ -59,6 +82,19 @@ public class CentroDeCustoController : ControllerBase
         }
     }
 
+    [HttpPost]
+    [Route("associarCategoriaAoCentroDeCusto")]
+    public async Task<ActionResult> AssociarCategoriaAoCentroDeCusto([FromBody] CentroDeCusto centroDeCusto)
+    {
+        Console.WriteLine(centroDeCusto.Nome);
+        if (_dbContext is null) return NotFound();
+        if (_dbContext.CentroDeCusto is null) return NotFound();
+        await _dbContext.AddAsync(centroDeCusto);
+        await _dbContext.SaveChangesAsync();
+
+        return Created("", centroDeCusto);
+    }
+
 
     [HttpGet]
     [Route("listarCentrosDeCusto")]
@@ -75,6 +111,48 @@ public class CentroDeCustoController : ControllerBase
         }
     }
 
+    [HttpPut]
+    [Route("alterar/{id}")]
+    public async Task<ActionResult> Alterar(int id, [FromBody] CentroDeCusto centroDeCusto)
+    {
+        try
+        {
+            if (_dbContext == null)
+            {
+                return NotFound();
+            }
 
+            // Verifique se o centro de custo com o antigoNome especificado existe
+            var centroDeCustoExistente = await _dbContext.CentroDeCusto.FirstOrDefaultAsync(d => d.Id == id);
 
+            if (centroDeCustoExistente == null)
+            {
+                return NotFound("Centro de Custo não encontrado.");
+            }
+
+            centroDeCustoExistente.Nome = centroDeCusto.Nome;
+
+            _dbContext.CentroDeCusto.Update(centroDeCustoExistente);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+        }
+    }
+
+    [HttpDelete]
+    [Route("excluir/{id}")]
+    public async Task<ActionResult> Excluir(int id)
+    {
+        if (_dbContext is null) return NotFound();
+        if (_dbContext.CentroDeCusto is null) return NotFound();
+        var centroDeCustoTemp = await _dbContext.CentroDeCusto.FindAsync(id);
+        if (centroDeCustoTemp is null) return NotFound();
+        _dbContext.Remove(centroDeCustoTemp);
+        await _dbContext.SaveChangesAsync();
+        return Ok();
+    }
 }

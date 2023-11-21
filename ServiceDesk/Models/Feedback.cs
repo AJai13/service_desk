@@ -11,5 +11,5 @@ public class Feedback
     [ForeignKey("Solucao")]
     public int SolucaoId { get; set; }
 
-    public Solucao Solucao { get; set; }
+    public Solucao? Solucao { get; set; }
 }

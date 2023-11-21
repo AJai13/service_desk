@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
 namespace ServiceDesk;
 
     public class CentroDeCusto
@@ -7,6 +9,6 @@ namespace ServiceDesk;
         public int Id { get; set; }
         public string? Nome { get; set; }
 
-        public Usuario Usuario { get; set; }
-
+        [JsonIgnore]
+        public Usuario? Usuario { get; set; }
 }
