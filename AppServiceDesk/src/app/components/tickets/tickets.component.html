@@ -1,0 +1,151 @@
+<div class="container p-5">
+  <div class="row">
+    <div class="col-6 border border-light rounded p-5 shadow" *ngIf="formulario">
+      <h6>{{ tituloFormulario }}</h6>
+      <form [formGroup]="formulario" (ngSubmit)="enviarFormulario()">
+        <div class="form-group">
+          <label>ID</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            formControlName="id"
+          />
+        </div>
+        <div class="form-group">
+          <label>Título</label>
+          <input type="text" class="form-control form-control-sm" formControlName="titulo" />
+        </div>
+        <div class="form-group">
+          <label>Descrição</label>
+          <input type="text" class="form-control form-control-sm" formControlName="descricao" />
+        </div>
+        <div class="form-group">
+          <label>Data Abertura</label>
+          <input type="datetime-local" class="form-control form-control-sm" formControlName="dataAbertura" />
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select class="form-control form-control-sm" formControlName="statusId">
+            <option *ngFor="let status of statuses" [value]="status.id">
+              {{ status.nome }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prioridade</label>
+          <select class="form-control form-control-sm" formControlName="prioridadeId">
+            <option *ngFor="let prioridade of prioridades" [value]="prioridade.id">
+              {{ prioridade.nome }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Categoria</label>
+          <select class="form-control form-control-sm" formControlName="categoriaId">
+            <option *ngFor="let categoria of categorias" [value]="categoria.id">
+              {{ categoria.nome }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Dispositivo</label>
+          <select class="form-control form-control-sm" formControlName="dispositivoId">
+            <option *ngFor="let dispositivo of dispositivos" [value]="dispositivo.id">
+              {{ dispositivo.nome }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Usuario</label>
+          <select class="form-control form-control-sm" formControlName="usuarioId">
+            <option *ngFor="let usuario of usuarios" [value]="usuario.id">
+              {{ usuario.nome }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Funcionario</label>
+          <select class="form-control form-control-sm" formControlName="funcionarioId">
+            <option *ngFor="let funcionario of funcionarios" [value]="funcionario.id">
+              {{ funcionario.nome }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Solução</label>
+          <select class="form-control form-control-sm" formControlName="solucaoId">
+            <option *ngFor="let solucao of solucoes" [value]="solucao.id">
+              {{ solucao.descSolucao }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>SLA</label>
+          <select class="form-control form-control-sm" formControlName="slaId">
+            <option *ngFor="let sla of slas" [value]="sla.id">
+              {{ sla.nome }}
+            </option>
+          </select>
+        </div>
+        <div class="container">
+          <div class="row">
+            <div>
+              <button type="submit" class="btn btn-sm btn-outline-secondary">
+                Salvar
+              </button>
+            </div>
+            <div class="pl-1">
+              <button
+                type="button"
+                (click)="excluir()"
+                class="btn btn-sm btn-outline-secondary"
+              >
+                Excluir
+              </button>
+            </div>
+            <div class="pl-1">
+              <button
+                type="button"
+                (click)="alterar()"
+                class="btn btn-sm btn-outline-secondary"
+              >
+                Alterar
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <br>
+  <div class="container">
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Descrição</th>
+        <th>Data Abertura</th>
+        <th>Status ID</th>
+        <th>Prioridade ID</th>
+        <th>Categoria ID</th>
+        <th>SLA ID</th>
+        <th>Dispositivo ID</th>
+        <th>Usuário ID</th>
+        <th>Funcionário ID</th>
+      </tr>
+      <tr *ngFor="let x of tickets">
+        <td>{{ x.id }}</td>
+        <td>{{ x.titulo }}</td>
+        <td>{{ x.descricao }}</td>
+        <td>{{ x.dataAbertura }}</td>
+        <td>{{ x.statusId }}</td>
+        <td>{{ x.prioridadeId }}</td>
+        <td>{{ x.categoriaId }}</td>
+        <td>{{ x.slaId }}</td>
+        <td>{{ x.dispositivoId }}</td>
+        <td>{{ x.usuarioId }}</td>
+        <td>{{ x.funcionarioId }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
